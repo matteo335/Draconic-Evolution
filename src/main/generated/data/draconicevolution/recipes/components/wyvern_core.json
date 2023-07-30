@@ -2,8 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "ABA",
-    "BCB",
-    "ABA"
+    "BDB",
+    "CBC"
   ],
   "key": {
     "A": {
@@ -14,9 +14,12 @@
     },
     "C": {
       "tag": "forge:nether_stars"
+    },
+    "D": {
+      "tag": "iceandfire:fire_dragon_heart"
     }
   },
   "result": {
-    "item": "iceandfire:fire_dragon_heart"
+    "item": "draconicevolution:wyvern_core"
   }
 }
