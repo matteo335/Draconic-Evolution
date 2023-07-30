@@ -34,10 +34,10 @@ public class StackModuleContext extends ModuleContext {
 
     @Override
     @Nullable
-    public IOPStorageModifiable getOpStorage() {
+    public IOPStorage getOpStorage() {
         LazyOptional<IOPStorage> optional = stack.getCapability(DECapabilities.OP_STORAGE);
         if (optional.isPresent()) {
-            return (IOPStorageModifiable) optional.orElseThrow(IllegalStateException::new);
+            return optional.orElseThrow(IllegalStateException::new);
         }
         return null;
     }

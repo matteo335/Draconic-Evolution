@@ -13,6 +13,7 @@ import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -149,7 +150,7 @@ public class ProcessExplosion implements IProcess {
         Vector3 posVecDown = new Vector3();
         for (int x = originPos.getX() - radius; x < originPos.getX() + radius; x++) {
             for (int z = originPos.getZ() - radius; z < originPos.getZ() + radius; z++) {
-                double dist = Utils.getDistanceAtoB(x, z, originPos.getX(), originPos.getZ());
+                double dist = Utils.getDistance(x, z, originPos.getX(), originPos.getZ());
                 if (dist < radius && dist >= radius - 1) {
                     posVecUp.set(x + 0.5, origin.y, z + 0.5);
                     double radialAngle = getRadialAngle(posVecUp);
@@ -352,7 +353,7 @@ public class ProcessExplosion implements IProcess {
         LogHelper.startTimer("Adding Blocks For Removal");
 
         ExplosionHelper removalHelper = new ExplosionHelper(world, origin.pos());
-        int i = 0;
+        int blocksRemoved = 0;
 
         removalHelper.setBlocksForRemoval(destroyedBlocks);
 
@@ -360,7 +361,7 @@ public class ProcessExplosion implements IProcess {
 
         LogHelper.startTimer("Adding update Blocks");
         removalHelper.addBlocksForUpdate(blocksToUpdate);
-        LogHelper.dev("Blocks Removed: " + i);
+        LogHelper.dev("Blocks Removed: " + blocksRemoved);
         LogHelper.stopTimer();
 
         LogHelper.startTimer("Adding Lava");
@@ -379,17 +380,21 @@ public class ProcessExplosion implements IProcess {
             DraconicNetwork.sendExplosionEffect(world.dimension(), pos, radius * 4, true);
         }
 
-        new DelayedExecutor(30) {
-            @Override
-            public void execute(Object[] args) {
-                List<Entity> list = world.getEntitiesOfClass(Entity.class, new AABB(pos, pos.offset(1, 1, 1)).inflate(radius * 2.5, radius * 2.5, radius * 2.5));
-                for (Entity e : list) {
-                    double dist = Vec3D.getCenter(pos).distance(e);
-                    float dmg = 10000F * (1F - (float) (dist / (radius * 1.2D)));
-                    e.hurt(fusionExplosion, dmg);
+        for (int i = 0; i <= radius; i+=10) {
+        	double calcRadius = radius * (i / (double)radius);
+            new DelayedExecutor(i + 30) {
+                @Override
+                public void execute(Object[] args) {
+                    List<Entity> list = world.getEntitiesOfClass(Entity.class, new AABB(pos, pos.offset(1, 1, 1)).inflate(calcRadius * 2.5, calcRadius * 2.5, calcRadius * 2.5));
+                    for (Entity e : list) {
+                        double dist = Vec3D.getCenter(pos).distance(e);
+                        float dmg = (1000) * (1F - (float) (dist / (calcRadius * 1.2D)));
+                        if (dmg <= 0) continue;
+                        e.hurt(fusionExplosion, dmg);
+                    }
                 }
-            }
-        }.run();
+            }.run();
+        }
 
         LogHelper.dev("Total explosion time: " + (System.currentTimeMillis() - l) / 1000D + "s");
         return true;

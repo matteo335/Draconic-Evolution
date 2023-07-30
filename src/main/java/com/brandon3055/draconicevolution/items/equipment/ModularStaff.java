@@ -12,10 +12,13 @@ import com.brandon3055.draconicevolution.api.modules.data.DamageModData;
 import com.brandon3055.draconicevolution.api.modules.lib.ModularOPStorage;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleEntity;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleHostImpl;
+import com.brandon3055.draconicevolution.init.DEModules;
 import com.brandon3055.draconicevolution.init.EquipCfg;
 import com.brandon3055.draconicevolution.init.ModuleCfg;
 import com.brandon3055.draconicevolution.init.TechProperties;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -74,8 +77,12 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
     @Override
     public ModuleHostImpl createHost(ItemStack stack) {
         ModuleHostImpl host = new ModuleHostImpl(techLevel, ModuleCfg.staffWidth(techLevel), ModuleCfg.staffHeight(techLevel), "staff", ModuleCfg.removeInvalidModules);
-        host.addCategories(ModuleCategory.RANGED_WEAPON);
+//        host.addCategories(ModuleCategory.RANGED_WEAPON);
 //        host.addAdditionalType(ModuleTypes.DAMAGE_MOD);
+        host.addCategories(ModuleCategory.TOOL_AXE);
+        host.addCategories(ModuleCategory.TOOL_HOE);
+        host.addCategories(ModuleCategory.TOOL_SHOVEL);
+
         return host;
     }
 
@@ -113,7 +120,12 @@ public class ModularStaff extends DiggerItem implements IReaperItem, IModularMin
 
     @Override
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
-        return enchantment.category == EnchantmentCategory.DIGGER || enchantment.category == EnchantmentCategory.WEAPON || super.canApplyAtEnchantingTable(stack, enchantment);
+        return enchantment.category == EnchantmentCategory.DIGGER ||
+                enchantment.category == EnchantmentCategory.WEAPON ||
+                enchantment.category.name().equals("PICKAXE_OR_SHOVEL") ||
+                enchantment.category.name().equals("SWORD_OR_AXE") ||
+                enchantment.category.name().equals("SWORD_OR_AXE_OR_CROSSBOW") ||
+                super.canApplyAtEnchantingTable(stack, enchantment);
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.brandon3055.draconicevolution.datagen;
 
-import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleType;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
@@ -50,7 +49,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.celestial_manipulator,                             "Celestial Manipulator");
         helper.add(DEContent.disenchanter,                                      "Disenchanter");
         helper.add(DEContent.dislocation_inhibitor,                             "Dislocation Normalization Field Projector");
-        add("tile." + MODID + ".dislocation_inhibitor.info",  "Prevents items dropped within 5 blocks from being collected by Item Dislocators.");
+        add("tile." + MODID + ".dislocation_inhibitor.info",                    "Prevents items dropped within 5 blocks from being collected by Item Dislocators.");
         helper.add(DEContent.dislocator_pedestal,                               "Dislocator Pedestal");
         helper.add(DEContent.dislocator_receptacle,                             "Dislocator Receptacle");
         helper.add(DEContent.draconium_chest,                                   "Draconium Chest");
@@ -112,8 +111,8 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEContent.magnet_advanced,                                   "Awakened Item Dislocator");
         helper.add(DEContent.dislocator,                                        "Dislocator");
         helper.add(DEContent.dislocator_advanced,                               "Advanced Dislocator");
-        helper.add(DEContent.dislocator_p2p,                                    "Bound Dislocator (Point to Point)");
-        helper.add(DEContent.dislocator_p2p_unbound,                            "Un-Bound Dislocator (Point to Point)");
+        helper.add(DEContent.dislocator_p2p,                                    "Bound Dislocator (Point-to-Point)");
+        helper.add(DEContent.dislocator_p2p_unbound,                            "Un-Bound Dislocator (Point-to-Point)");
         helper.add(DEContent.dislocator_player,                                 "Bound Dislocator (Player)");
         helper.add(DEContent.dislocator_player_unbound,                         "Un-Bound Dislocator (Player)");
         helper.add(DEContent.crystal_binder,                                    "Crystal Binder");
@@ -165,14 +164,18 @@ public class LangGenerator extends LanguageProvider {
         helper.add("mining_speed",                                              "Dig Speed Multiplier");
         helper.add("mining_speed.info",                                         "Allows you to adjust how fast this tool breaks blocks. Useful if you need precision over speed.");
         helper.add("walk_speed",                                                "Walk Speed");
-        helper.add("walk_speed.info",                                           "Allows you to adjust the speed boost that is applied while you are walking.");
+        helper.add("walk_speed.info",                                           "Allows you to adjust the speed boost that's applied when you walk.");
         helper.add("run_speed",                                                 "Sprint Speed");
-        helper.add("run_speed.info",                                            "Allows you to adjust the speed boost that is applied while you are sprinting.");
+        helper.add("run_speed.info",                                            "Allows you to adjust the speed boost that's applied when you sprint.");
         helper.add("jump_boost",                                                "Jump Boost");
         helper.add("jump_boost.info",                                           "Adjusts jump boost.");
         helper.add("jump_boost_run",                                            "Jump Boost - Running");
         helper.add("jump_boost_run.info",                                       "Adjusts jump boost while sprinting.");
-
+        helper.add("night_vision.enabled",                                      "Night Vision Toggle");
+        helper.add("night_vision.enabled.info",                                 "Allows you to toggle your night vision on and off. While enabled, any other source of night vision is overridden.");
+        helper.add("night_vision.light_level",                                  "Night Vision Light Level");
+        helper.add("night_vision.light_level.info",                             "Sets the light level at which the night vision will become active.  While active, it drains a small amount of OP every tick.");
+        
         helper.add("shield_mod.enabled",                                        "Shield Toggle");
         helper.add("shield_mod.enabled.info",                                   "Allows you to disable your shield. This prevents your shield from using power but leaves you vulnerable to damage.");
         helper.add("shield_mod.always_visible",                                 "Shield Always Visible");
@@ -180,6 +183,9 @@ public class LangGenerator extends LanguageProvider {
 
         helper.add("feed_mod.consume_food",                                     "Consume Food");
         helper.add("feed_mod.consume_food.info",                                "When enabled, this module will automatically consume food from your inventory to fill its internal storage.");
+
+        helper.add("junk_filter_mod.enabled",                                   "Incinerate");
+        helper.add("ender_collection_mod.enabled",                              "Ender Collection");
 
         helper.add("flight_mod.elytra",                                         "Elytra Flight");
         helper.add("flight_mod.elytra.info",                                    "Allows you to enable / disable elytra flight.");
@@ -196,6 +202,9 @@ public class LangGenerator extends LanguageProvider {
         helper.add("charge_hot_bar",                                            "Charge Hotbar");
         helper.add("charge_main",                                               "Charge Main Inventory");
         helper.add("charge_curios",                                             "Charge Curios");
+
+        helper.add("tree_harvest_mod.leaves",                                   "Harvest Leaves");
+        helper.add("tree_harvest_mod.range",                                    "Harvest Radius");
     }
 
     private void modules(PrefixHelper helper) {
@@ -274,6 +283,35 @@ public class LangGenerator extends LanguageProvider {
 
         helper.add(ModuleTypes.JUNK_FILTER,                                     "Junk Filter");
 
+        helper.add("filtered_module.filter_slot",                               "Filter Slot");
+        helper.add("filtered_module.filter_item",                               "Filter Item");
+        helper.add("filtered_module.filter_tag",                                "Filter Tag");
+        helper.add("filtered_module.set_item_filter",                           "Click with item to set item filter");
+        helper.add("filtered_module.configure_slot",                            "Right click to set tag filter");
+        helper.add("filtered_module.clear_slot",                                "Shift+Right click to clear");
+        helper.add("filtered_module.matching",                                  "Matching Item(s)");
+
+        helper.add("filtered_module.filter_by_tag",                             "Filter by item tag");
+        helper.add("filtered_module.filter_example",                            "e.g. forge:stone");
+        helper.add("filtered_module.select_or_enter",                           "Select tag");
+        helper.add("filtered_module.select_from_item",                          "Select tag from item");
+
+        helper.add(ModuleTypes.ENDER_COLLECTION,                                "Ender Collection");
+        helper.add("ender_storage.about",                                       "Transfers collected items to your personal ender chest.");
+        helper.add("ender_storage.about_compat",                                "Can be bound to an Ender Storage ender chest.");
+        helper.add("ender_storage.about_compat2",                               "(Shift+Right Click ender chest with module)");
+        helper.add("ender_storage.frequency",                                   "Frequency");
+        helper.add("ender_storage.owner",                                       "Owner");
+        helper.add("ender_storage.how_to_clear",                                "Shift right click module to clear");
+
+        helper.add(ModuleTypes.TREE_HARVEST,                                    "Tree Harvest");
+        helper.add("tree_harvest_range.name",                                   "Tree Harvest Range");
+        helper.add("tree_harvest_range.value",                                  "%s Blocks");
+        helper.add("tree_harvest_speed.name",                                   "Tree Harvest Speed");
+        helper.add("tree_harvest_speed.value",                                  "%s Blocks/s");
+        helper.add("tree_harvest.single",                                       "Single: Hold right click on tree.");
+        helper.add("tree_harvest.area",                                         "Area: Hold right click in centre of target area.");
+
         helper.add(ModuleTypes.AUTO_FIRE,                                       "Auto Fire");
 
         helper.add(ModuleTypes.PROJ_ANTI_IMMUNE,                                "Projectile Immunity Cancellation");
@@ -319,6 +357,15 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEModules.wyvernAOE,                                         "Wyvern AOE Module");
         helper.add(DEModules.draconicAOE,                                       "Draconic AOE Module");
         helper.add(DEModules.chaoticAOE,                                        "Chaotic AOE Module");
+
+        helper.add(DEModules.wyvernJunkFilter,                                  "Selective Incineration Module");
+
+        helper.add(DEModules.wyvernEnderCollection,                             "Ender Collection Module");
+        helper.add(DEModules.draconicEnderCollection,                           "Filterable Ender Collection Module");
+
+        helper.add(DEModules.wyvernTreeHarvest,                                 "Wyvern Tree Harvester");
+        helper.add(DEModules.draconicTreeHarvest,                               "Draconic Forest Reduction Assistant");
+        helper.add(DEModules.chaoticTreeHarvest,                                "Chaotic Deforestation Module");
 
         helper.add(DEModules.wyvernAutoFire,                                    "Auto Fire Module");
 
@@ -372,7 +419,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add(DEModules.wyvernAutoFeed,                                    "Wyvern Auto Feed Module");
         helper.add(DEModules.draconicAutoFeed,                                  "Draconic Auto Feed Module");
 
-//        helper.add(DEModules.wyvernNightVision,                                 "Night Vision Module");
+        helper.add(DEModules.wyvernNightVision,                                 "Night Vision Module");
 
         helper.add(DEModules.draconiumJump,                                     "Jump Module");
         helper.add(DEModules.wyvernJump,                                        "Wyvern Jump Module");
@@ -412,7 +459,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("add_to_group.info",                                         "Add to Group");
         helper.add("drop_to_delete.info",                                       "Drop to delete.");
         helper.add("drop_prop_here",                                            "Drop Property Here");
-        helper.add("global.info",                                               "Toggle global mode\nWhen in global mode, a property will be applied to all equipment of the same type.\nPlease note that when in global mode, the displayed value may not match the items actual value.");
+        helper.add("global.info",                                               "Toggle global mode\nWhen in global mode, a property will be applied to all equipment of the same type.\nPlease note that when in global mode, the displayed value may not match the item's actual value.");
         helper.add("provider_unavailable",                                      "Item not available.");
         helper.add("select_item_to_get_started",                                "Select a configurable item to get started.");
         helper.add("options",                                                   "Options");
@@ -435,10 +482,10 @@ public class LangGenerator extends LanguageProvider {
         helper.add("enable_adv_xover",                                          "Enable Advanced Crossover");
         helper.add("enable_adv_xover.info",                                     "Show configured properties, property groups and presets when in simple configuration mode.");
         helper.add("not_bound",                                                 "Not Bound");
-        helper.add("toggle_global_binding.info",                                "Global Binding\nWill allow you to use this keybind when this GUI is closed.\nThis will work with any key regardless of weather or not it conflicts with another keybinding.");
+        helper.add("toggle_global_binding.info",                                "Global Binding\nThis setting will allow you to use this keybind when this GUI is closed.\nThis will work with any key even if it conflicts with another keybinding.");
         helper.add("set_key_bind.info",                                         "Click to set a keybind for this preset.");
         helper.add("open_modules.info",                                         "Open Module Configuration GUI");
-        helper.add("no_configurable_items",                                     "You do not have any configurable items in your inventory!");
+        helper.add("no_configurable_items",                                     "You don't have any configurable items in your inventory!");
 
         helper.setPrefix("gui." + MODID + ".boolean_property");
         helper.add("true",                                                      "True");
@@ -455,8 +502,11 @@ public class LangGenerator extends LanguageProvider {
         helper.add("name",                                                      "Configure Modules");
         helper.add("modules",                                                   "Modules");
         helper.add("open_item_config.info",                                     "Open Item Configuration GUI");
-        helper.add("no_module_hosts",                                           "You do not have any modular items in your inventory!");
+        helper.add("no_module_hosts",                                           "You don't have any modular items in your inventory!");
         helper.add("module_grid",                                               "Module Grid");
+
+        //SupportedModulesIcon
+        add("gui." + MODID + ".modular_item.supported_modules",                 "Supported Modules");
 
         //Generator
         helper.setPrefix("gui." + MODID + ".generator");
@@ -477,7 +527,7 @@ public class LangGenerator extends LanguageProvider {
         //Grinder
         helper.setPrefix("gui." + MODID + ".grinder");
         helper.add("aoe",                                                       "AOE:");
-        helper.add("aoe.info",                                                  "Increments the grinder's Area Of Effect.\n(The area in which it will kill mobs)");
+        helper.add("aoe.info",                                                  "Changes the grinder's Area Of Effect.\n(The area in which it will kill mobs.)");
         helper.add("show_aoe",                                                  "Show AOE");
         helper.add("collect.items",                                             "Collect Items");
         helper.add("collect.items.info",                                        "If enabled, the Grinder will collect items within the kill area and insert them into an adjacent inventory.");
@@ -572,19 +622,19 @@ public class LangGenerator extends LanguageProvider {
         helper.add("sas.info",                                                  "Semi-Automated Shutdown. When enabled, the reactor will automatically initiate shutdown when the temperature drops below 2500C and saturation reaches 99%. This can be used to automatically shutdown your reactor in the event of a malfunction or just when it needs to be refueled.");
 
         helper.add("rs_mode_temp",                                              "Temp");
-        helper.add("rs_mode_temp.info",                                         "Will output a signal from 0 to 15 as temperature rises up to 10000C.");
+        helper.add("rs_mode_temp.info",                                         "Output a signal from 0 to 15 as temperature rises up to 10000C.");
         helper.add("rs_mode_temp_inv",                                          "-Temp");
         helper.add("rs_mode_temp_inv.info",                                     "Same as Temp, but the signal is inverted.");
         helper.add("rs_mode_field",                                             "Shield");
-        helper.add("rs_mode_field.info",                                        "Will output a signal from 0 to 15 as the shield strength fluctuates between 0 and 100%, Signal of 1 = > 10% shield and Signal of 15 = >= 90% shield power.");
+        helper.add("rs_mode_field.info",                                        "Output a signal from 0 to 15 as the shield strength fluctuates between 0 and 100%; Signal of 1 = > 10% shield and Signal of 15 = >= 90% shield power.");
         helper.add("rs_mode_field_inv",                                         "-Shield");
         helper.add("rs_mode_field_inv.info",                                    "Same as Shield, but the signal is inverted.");
         helper.add("rs_mode_sat",                                               "Saturation");
-        helper.add("rs_mode_sat.info",                                          "Will output a signal from 0 to 15 as the saturation level fluctuates between 0 and 100%.");
+        helper.add("rs_mode_sat.info",                                          "Output a signal from 0 to 15 as the saturation level fluctuates between 0 and 100%.");
         helper.add("rs_mode_sat_inv",                                           "-Saturation");
         helper.add("rs_mode_sat_inv.info",                                      "Same as Saturation, but the signal is inverted.");
         helper.add("rs_mode_fuel",                                              "Conversion");
-        helper.add("rs_mode_fuel.info",                                         "Will output a signal from 0 to 15 as the fuel conversion level increases from 0 to 100%, Signal of 15 = >= 90% Conversion.");
+        helper.add("rs_mode_fuel.info",                                         "Output a signal from 0 to 15 as the fuel conversion level increases from 0 to 100%, Signal of 15 = >= 90% Conversion.");
         helper.add("rs_mode_fuel_inv",                                          "-Conversion");
         helper.add("rs_mode_fuel_inv.info",                                     "Same as Conversion, but the signal is inverted.");
 
@@ -621,7 +671,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("mode_buffer",                                               "Buffer\n - Accepts power from external sources\n - Accepts power from discharge slots\n - Discharges to external consumers\n - Discharges to charge slots");
         helper.add("mode_disabled",                                             "Disabled\n - Slot is disabled");
         helper.add("sequential_charge",                                         "Sequential Input Priority\nThe left most item will receive charging priority.\nOnce that item is full the next will receive priority.");
-        helper.add("balanced_charge",                                           "Balanced Input Priority\nPower input will be balanced between all 4 slots\nbut each slot will be limited to 1/4 of the total input rate.");
+        helper.add("balanced_charge",                                           "Balanced Input Priority\nPower input will be balanced between all 4 slots,\nbut each slot will be limited to 1/4 of the total input rate.");
 
         //Dislocator
         helper.setPrefix("gui." + MODID + ".dislocator");
@@ -642,7 +692,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("drag_to_move",                                              "Left click and drag to move.");
         helper.add("delete.info",                                               "Delete");
         helper.add("edit_lock.info",                                            "Toggle edit lock");
-        helper.add("right_click_mode.info",                                     "Switch between \"Teleport to Selected\" and \"Blink\" on right click.\\nYou can also configure keybindings.");
+        helper.add("right_click_mode.info",                                     "Switch between \"Teleport to Selected\" and \"Blink\" on right click.\nYou can also configure keybindings.");
         helper.add("mode_blink",                                                "Use Mode:\nBlink");
         helper.add("mode_tp",                                                   "Use Mode:\nTeleport");
         helper.add("add_1",                                                     "+1");
@@ -671,21 +721,19 @@ public class LangGenerator extends LanguageProvider {
         helper.add("build_guide",                                               "Toggle Build Guide");
         helper.add("assemble",                                                  "Assemble Core");
         helper.add("energy_target",                                             "Energy Target");
-        helper.add("energy_target_info",                                        "Use to define an 'energy target'.\nThis is for display purposes.\nYou can use basic numbers or\nscientific notation in the following format,\n'9.223E18' which would translate to\n9223000000000000000");
+        helper.add("energy_target_info",                                        "Used to define an 'energy target'.\nThis is for display purposes only.\nYou can use basic numbers or\nscientific notation in the following format,\n'9.223E18' which would translate to\n9223000000000000000");
         helper.add("legacy_false",                                              "Enable legacy renderer");
         helper.add("legacy_true",                                               "Disable legacy renderer");
         helper.add("custom_colour_false",                                       "Enable colour customisation");
         helper.add("custom_colour_true",                                        "Disable colour customisation");
         helper.add("config_colour",                                             "Configure Colour");
         helper.add("reset",                                                     "Reset");
-        helper.add("core_invalid",                                              "Core structure invalid");
-        helper.add("stabilizers_invalid",                                       "Stabiliser configuration invalid" );
+        helper.add("core_invalid",                                              "Core structure invalid.");
+        helper.add("stabilizers_invalid",                                       "Stabilizer configuration invalid." );
         helper.add("stabilizers_advanced",                                      "(Advanced stabilizers required)");
 
         add("msg." + MODID + ".energy_core.already_building", "Assembly already in progress!");
         add("msg." + MODID + ".energy_core.core_not_found",   "404 Core Not Found!!!");
-
-
 
         add("generic.configureRedstone",                                        "Configure Redstone");
     }
@@ -727,6 +775,8 @@ public class LangGenerator extends LanguageProvider {
         helper.add("requires_energy_press",                                     "Press %s to open module config.");
         helper.add("error.no_modular_items",                                    "You don't have any modular items in your inventory!");
         helper.add("error.module_install_limit",                                "Install limit reached for this module.");
+        helper.add("error.only_one_use_override_module",                        "There is already a module that overrides right click functionality installed. Only one such module can be installed at a time!");
+        helper.add("error.not_compatible_with",                                 "Not compatible with");
 
         helper.add("cant_install.level_high",                                   "The module tier is too high for this modular item.");
         helper.add("cant_install.not_supported",                                "This module is not supported by this modular item.");
@@ -757,7 +807,7 @@ public class LangGenerator extends LanguageProvider {
         helper.add("bound.player_link",                                         "Bound to player");
         helper.add("bound.key",                                                 "Unique Key");
         helper.add("bound.bound_to",                                            "Bound To");
-        helper.add("bound.in_player_inventory",                                 "The bound dislocator is in a players inventory. Will teleport to player.");
+        helper.add("bound.in_player_inventory",                                 "The bound dislocator is in a players inventory. Will teleport to the player.");
         helper.add("bound.unknown_link",                                        "Unknown Location");
         helper.add("bound.cant_find_player",                                    "The bound player is not online!");
         helper.add("bound.cant_find_target",                                    "Could not find the bound dislocator!");
@@ -786,7 +836,7 @@ public class LangGenerator extends LanguageProvider {
 
         //Armor Hud
         add("hud." + MODID + ".shield_hud.name",              "Shield HUD");
-        add("hud." + MODID + ".shield_hud.info",              "This HUD displays the current status or your Draconic Shield as well as your energy reserves and Undying modules.");
+        add("hud." + MODID + ".shield_hud.info",              "This HUD displays the current status of your Draconic Shield as well as your energy reserves and Undying modules.");
         helper.setPrefix("hud_armor." + MODID);
         helper.add("no_shield",                                                 "No Shield Installed");
         helper.add("shield_disabled",                                           "Shield Disabled");
@@ -803,7 +853,10 @@ public class LangGenerator extends LanguageProvider {
         helper.add("scale",                                                     "Scale");
         helper.add("scale.info",                                                "Change HUD element scale.");
 
-        add("hud." + MODID + ".open_hud_config",              "Open HUD configuration GUI.");
+        add("hud." + MODID + ".open_hud_config",                                "Open HUD configuration GUI.");
+
+        add("disenchanter." + MODID + ".not_enough_levels",                     "You require %s levels to extract that enchantment!");
+
     }
 
     private void toolTips(PrefixHelper helper) {

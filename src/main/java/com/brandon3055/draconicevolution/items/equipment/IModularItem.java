@@ -3,7 +3,6 @@ package com.brandon3055.draconicevolution.items.equipment;
 import codechicken.lib.math.MathHelper;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.brandonscore.capability.MultiCapabilityProvider;
 import com.brandon3055.brandonscore.utils.EnergyUtils;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
@@ -81,7 +80,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
                 props.add(new DecimalProperty("mining_speed", 1).range(0, 1).setFormatter(DecimalFormatter.PERCENT_1));
                 AOEData aoe = host.getModuleData(ModuleTypes.AOE);
                 if (aoe != null) {
-                    props.add(new IntegerProperty("mining_aoe", aoe.getAOE()).range(0, aoe.getAOE()).setFormatter(IntegerFormatter.AOE));
+                    props.add(new IntegerProperty("mining_aoe", aoe.aoe()).range(0, aoe.aoe()).setFormatter(IntegerFormatter.AOE));
                     props.add(new BooleanProperty("aoe_safe", false).setFormatter(BooleanFormatter.ENABLED_DISABLED));
                 }
             });
@@ -92,7 +91,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
             host.addPropertyBuilder(props -> {
                 AOEData aoe = host.getModuleData(ModuleTypes.AOE);
                 if (aoe != null) {
-                    props.add(new DecimalProperty("attack_aoe", aoe.getAOE() * 1.5).range(0, aoe.getAOE() * 1.5).setFormatter(DecimalFormatter.AOE_1));
+                    props.add(new DecimalProperty("attack_aoe", aoe.aoe() * 1.5).range(0, aoe.aoe() * 1.5).setFormatter(DecimalFormatter.AOE_1));
                 }
             });
         }
@@ -162,7 +161,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
     default float getDestroySpeed(ItemStack stack, BlockState state) {
         ModuleHost host = stack.getCapability(DECapabilities.MODULE_HOST_CAPABILITY).orElseThrow(IllegalStateException::new);
         SpeedData data = host.getModuleData(ModuleTypes.SPEED);
-        float moduleValue = data == null ? 0 : (float) data.getSpeedMultiplier();
+        float moduleValue = data == null ? 0 : (float) data.speedMultiplier();
         //The way vanilla handles efficiency is kinda dumb. So this is far from perfect but its kinda close... ish.
         float multiplier = MathHelper.map((moduleValue + 1F) * (moduleValue + 1F), 1F, 2F, 1F, 1.65F);
         float propVal = 1F;
@@ -172,7 +171,7 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
             propVal *= propVal; //Make this exponential
         }
 
-        float aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).getAOE();
+        float aoe = host.getModuleData(ModuleTypes.AOE, new AOEData(0)).aoe();
         if (host instanceof PropertyProvider && ((PropertyProvider) host).hasInt("mining_aoe")) {
             aoe = ((PropertyProvider) host).getInt("mining_aoe").getValue();
         }
@@ -223,10 +222,8 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
             return amount;
         }
         IOPStorage storage = EnergyUtils.getStorage(stack);
-        if (storage instanceof IOPStorageModifiable) {
-            return ((IOPStorageModifiable) storage).modifyEnergyStored(-amount);
-        } else if (storage != null) {
-            return storage.extractOP(amount, false);
+        if (storage != null) {
+            return storage.modifyEnergyStored(-amount);
         }
         return 0;
     }
@@ -246,5 +243,10 @@ public interface IModularItem extends IForgeItem, IFusionDataTransfer {
         float energy = EnergyUtils.getEnergyStored(stack);
         float f = Math.max(0.0F, (energy) / maxEnergy);
         return Mth.hsvToRgb(f / 3.0F, 1.0F, 1.0F);
+    }
+
+    @Override
+    default boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return oldStack.getItem() != newStack.getItem() || slotChanged;
     }
 }

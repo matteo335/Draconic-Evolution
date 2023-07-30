@@ -85,7 +85,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
             if (speed != null) {
                 Supplier<Double> speedGetter = () -> {
                     SpeedData data = host.getModuleData(ModuleTypes.SPEED);
-                    double maxSpeed = data == null ? 0 : data.getSpeedMultiplier();
+                    double maxSpeed = data == null ? 0 : data.speedMultiplier();
                     if (DEConfig.armorSpeedLimit != -1) {
                         maxSpeed = Math.min(maxSpeed, DEConfig.armorSpeedLimit);
                     }
@@ -100,7 +100,7 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
             if (jump != null) {
                 Supplier<Double> jumpGetter = () -> {
                     JumpData data = host.getModuleData(ModuleTypes.JUMP_BOOST);
-                    return data == null ? 0 : data.getMultiplier();
+                    return data == null ? 0 : data.multiplier();
                 };
 
                 props.add(new DecimalProperty("jump_boost_run", 0).min(0).max(jumpGetter).setFormatter(ConfigProperty.DecimalFormatter.PLUS_PERCENT_0));
@@ -142,7 +142,8 @@ public class ModularChestpiece extends ArmorItem implements IModularArmor, IDEEq
     @Override
     @OnlyIn(Dist.CLIENT)
     public EquippedItemModel getExtendedModel(LivingEntity entity, ItemStack stack, @Nullable EquipmentSlot slot, HumanoidModel<?> parentModel, boolean slim) {
-        boolean onArmor = slot == null && !entity.getItemBySlot(EquipmentSlot.CHEST).isEmpty();
+        ItemStack chest = entity.getItemBySlot(EquipmentSlot.CHEST);
+        boolean onArmor = slot == null && !chest.isEmpty() && chest.getItem() instanceof ArmorItem;
         if (model == null || model_on_armor == null) {
             model = new ModularChestpieceModel<>(techLevel, false);
             model_on_armor = new ModularChestpieceModel<>(techLevel, true);

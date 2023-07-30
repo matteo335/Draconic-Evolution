@@ -87,15 +87,10 @@ public class ModuleItem<P extends ModuleData<P>> extends Item implements ModuleP
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         super.appendHoverText(stack, worldIn, tooltip, flagIn);
-        getModule().addInformation(tooltip);
-        ModuleEntity entity = getModule().createEntity();
+        getModule().addInformation(tooltip, new LimitedModuleContext(stack, null, worldIn, null));
+        ModuleEntity<?> entity = getModule().createEntity();
         entity.readFromItemStack(stack, new StackModuleContext(stack, null, null));
         entity.addToolTip(tooltip);
-//        tooltip.add(new StringTextComponent("//Module textures are wip"));
-
-        if (getModule().getType() == ModuleTypes.FLIGHT && EquipmentManager.equipModLoaded()) {
-            tooltip.add(new TextComponent("//Elytra does not currently work when chestpiece is in a curio slot."));
-        }
     }
 
     @Override

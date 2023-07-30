@@ -1,8 +1,10 @@
 package com.brandon3055.draconicevolution.init;
 
 import codechicken.lib.model.ModelRegistryHelper;
+import com.brandon3055.brandonscore.BrandonsCore;
 import com.brandon3055.brandonscore.api.TechLevel;
 import com.brandon3055.brandonscore.api.hud.AbstractHudElement;
+import com.brandon3055.brandonscore.handlers.contributor.ContributorHandler;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.blocks.energynet.EnergyCrystal;
 import com.brandon3055.draconicevolution.client.*;
@@ -10,10 +12,10 @@ import com.brandon3055.draconicevolution.client.gui.*;
 import com.brandon3055.draconicevolution.client.gui.modular.GuiModularItem;
 import com.brandon3055.draconicevolution.client.gui.modular.itemconfig.GuiConfigurableItem;
 import com.brandon3055.draconicevolution.client.handler.ClientEventHandler;
-import com.brandon3055.draconicevolution.client.handler.StaffRenderEventHandler;
+import com.brandon3055.draconicevolution.client.handler.ModularItemRenderOverrideHandler;
+import com.brandon3055.draconicevolution.client.handler.OverlayRenderHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
-import com.brandon3055.brandonscore.client.model.EquippedItemModelLayer;
 import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianCrystalRenderer;
 import com.brandon3055.draconicevolution.client.render.entity.GuardianProjectileRenderer;
@@ -24,12 +26,9 @@ import com.brandon3055.draconicevolution.client.render.item.*;
 import com.brandon3055.draconicevolution.client.render.tile.*;
 import com.brandon3055.draconicevolution.items.equipment.IModularArmor;
 import net.covers1624.quack.util.CrashLock;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -68,8 +67,9 @@ public class ClientInit {
         modBus.addListener((ColorHandlerEvent.Block event) -> moduleSpriteUploader = new ModuleSpriteUploader());
         modBus.addGenericListener(AbstractHudElement.class, ClientInit::registerHudElements);
 
-        StaffRenderEventHandler.init();
+        ModularItemRenderOverrideHandler.init();
         CustomBossInfoHandler.init();
+        OverlayRenderHandler.init();
         DEShaders.init();
     }
 
@@ -219,7 +219,15 @@ public class ClientInit {
             renderer.addLayer(new ElytraLayer(renderer, event.getEntityModels()) {
                 @Override
                 public boolean shouldRender(@NotNull ItemStack stack, @NotNull LivingEntity entity) {
-                    return stack.getItem() instanceof IModularArmor && stack.canElytraFly(entity);
+                    if (ContributorHandler.shouldCancelElytra(entity)) return false;
+                    if (stack.getItem() instanceof IModularArmor item) {
+                        return item.canElytraFlyBC(stack, entity);
+                    }
+                    if (BrandonsCore.equipmentManager != null) {
+                        ItemStack curio = BrandonsCore.equipmentManager.findMatchingItem(e -> e.getItem() instanceof IModularArmor, entity);
+                        return curio.getItem() instanceof IModularArmor item && item.canElytraFlyBC(curio, entity);
+                    }
+                    return false;
                 }
             });
         }

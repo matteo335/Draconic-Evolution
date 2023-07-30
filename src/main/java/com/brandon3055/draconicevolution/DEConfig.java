@@ -65,9 +65,13 @@ public class DEConfig {
     public static double reactorExplosionScale = 1;
     public static boolean disableLargeReactorBoom = false;
 
+    public static int grinderEnergyPerHeart;
+    public static Set<String> grinderBlackList;
+    public static boolean allowGrindingPlayers;
+
     public static int soulDropChance = 1000;
     public static int passiveSoulDropChance = 800;
-    public static String[] spawnerList = {};
+    public static Set<String> spawnerList = new HashSet<>();
     public static boolean spawnerListWhiteList = false;
     public static boolean allowBossSouls = false;
     public static Integer[] spawnerDelays = new Integer[]{200, 800, 100, 400, 50, 200, 25, 100};
@@ -190,9 +194,9 @@ public class DEConfig {
                     .onSync((tag, type) -> passiveSoulDropChance = tag.getInt());
             deSpawner.getValueList("spawnerList")
                     .syncTagToClient()
-                    .setComment("By default, any entities added to this list will not drop their souls and will not be spawnable by the Stabilized Spawner.")
+                    .setComment("By default, any entities added to this list will not drop their souls and will not be spawnable by the Stabilized Spawner. Use entity registry name. e.g. minecraft:cow")
                     .setDefaultStrings(Collections.emptyList())
-                    .onSync((tag, type) -> spawnerList = tag.getStrings().toArray(new String[0]));
+                    .onSync((tag, type) -> spawnerList = new HashSet<>(tag.getStrings()));
             deSpawner.getValue("spawnerListWhiteList")
                     .syncTagToClient()
                     .setComment("Changes the spawner list to a whitelist instead of a blacklist.")
@@ -298,6 +302,22 @@ public class DEConfig {
                     }
                 })
                 .onSync((tag, reason) -> coreCapacity = tag.getLongs().toArray(new Long[0]));
+
+        serverTag.getValue("grinderEnergyPerHeart")
+                .syncTagToClient()
+                .setComment("Mob Grinder energy required per entity health point")
+                .setDefaultInt(80)
+                .onSync((tag, type) -> grinderEnergyPerHeart = tag.getInt());
+        serverTag.getValueList("grinderBlackList")
+                .syncTagToClient()
+                .setComment("Mob Grinder entity blacklist.")
+                .setDefaultStrings(Lists.newArrayList("evilcraft:vengeance_spirit"))
+                .onSync((tag, type) -> grinderBlackList = new HashSet<>(tag.getStrings()));
+        serverTag.getValue("allowGrindingPlayers")
+                .syncTagToClient()
+                .setComment("Allow mob grinder to grind players")
+                .setDefaultBoolean(false)
+                .onSync((tag, type) -> allowGrindingPlayers = tag.getBoolean());
     }
 
     //Client properties
@@ -309,11 +329,11 @@ public class DEConfig {
     public static boolean configUiEnableAdvancedXOver;
     public static boolean fancyToolModels;
     @Deprecated
-    public static boolean toolShaders;
-    public static boolean crystalShaders;
-    public static boolean reactorShaders;
+//    public static boolean toolShaders;
+//    public static boolean crystalShaders;
+//    public static boolean reactorShaders;
     public static boolean guardianShaders;
-    public static boolean otherShaders;
+    //    public static boolean otherShaders;
     public static boolean itemDislocatorSound;
 
     private static void loadClient() {
@@ -324,26 +344,26 @@ public class DEConfig {
                 .setComment("Set this to false to disable the fancy 3D tool models. (Requires restart)")
                 .setDefaultBoolean(true)
                 .onSync((tag, type) -> fancyToolModels = tag.getBoolean());
-        clientTag.getValue("toolShaders")
-                .setComment("Set this to false to disable tool shaders.")
-                .setDefaultBoolean(true)
-                .onSync((tag, type) -> toolShaders = tag.getBoolean());
-        clientTag.getValue("crystalShaders")
-                .setComment("Set this to false to disable crystal shaders.")
-                .setDefaultBoolean(true)
-                .onSync((tag, type) -> crystalShaders = tag.getBoolean());
-        clientTag.getValue("reactorShaders")
-                .setComment("Set this to false to disable reactor shaders.")
-                .setDefaultBoolean(true)
-                .onSync((tag, type) -> reactorShaders = tag.getBoolean());
+//        clientTag.getValue("toolShaders")
+//                .setComment("Set this to false to disable tool shaders.")
+//                .setDefaultBoolean(true)
+//                .onSync((tag, type) -> toolShaders = tag.getBoolean());
+//        clientTag.getValue("crystalShaders")
+//                .setComment("Set this to false to disable crystal shaders.")
+//                .setDefaultBoolean(true)
+//                .onSync((tag, type) -> crystalShaders = tag.getBoolean());
+//        clientTag.getValue("reactorShaders")
+//                .setComment("Set this to false to disable reactor shaders.")
+//                .setDefaultBoolean(true)
+//                .onSync((tag, type) -> reactorShaders = tag.getBoolean());
         clientTag.getValue("guardianShaders")
                 .setComment("Set this to false to disable chaos guardian shaders. (May visually break some stuff but could be useful if you are experiencing gl crashes.)")
                 .setDefaultBoolean(true)
                 .onSync((tag, type) -> guardianShaders = tag.getBoolean());
-        clientTag.getValue("otherShaders")
-                .setComment("Set this to false to disable all other shaders.")
-                .setDefaultBoolean(true)
-                .onSync((tag, type) -> otherShaders = tag.getBoolean());
+//        clientTag.getValue("otherShaders")
+//                .setComment("Set this to false to disable all other shaders.")
+//                .setDefaultBoolean(true)
+//                .onSync((tag, type) -> otherShaders = tag.getBoolean());
 
         ConfigCategory itemConfigGui = clientTag.getCategory("itemConfigGUI");
         itemConfigGui.setComment("These settings is accessible in game via the \"Configure Equipment\" gui.");

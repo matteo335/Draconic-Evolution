@@ -7,7 +7,6 @@ import com.brandon3055.brandonscore.blocks.TileBCore;
 import com.brandon3055.brandonscore.capability.CapabilityOP;
 import com.brandon3055.brandonscore.client.particle.IntParticleType;
 import com.brandon3055.brandonscore.lib.Vec3D;
-import com.brandon3055.brandonscore.lib.Vec3I;
 import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.utils.Utils;
 import com.brandon3055.draconicevolution.blocks.StructureBlock;
@@ -17,7 +16,6 @@ import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +48,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
     public final ManagedEnum<EnumColour> colour = register(new ManagedEnum<>("colour", EnumColour.class, null, DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedBool structureValid = register(new ManagedBool("structure_valid", DataFlags.SAVE_NBT_SYNC_TILE));
     public final ManagedPos coreOffset = register(new ManagedPos("core_offset", (BlockPos) null, DataFlags.SAVE_NBT_SYNC_TILE));
-    private final ManagedByte particleRate = register(new ManagedByte("particle_rate", DataFlags.SAVE_NBT_SYNC_TILE));
+    private final ManagedByte particleRate = register(new ManagedByte("particle_rate", DataFlags.SYNC_TILE));
 
     private TileEnergyCore core = null;
     private int coreSelection = 0;
@@ -120,6 +118,11 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
         @Override
         public int getMaxEnergyStored() {
             return (int) Math.min(getMaxOPStored(), Integer.MAX_VALUE);
+        }
+
+        @Override
+        public long modifyEnergyStored(long amount) {
+            return 0; //Invalid operation for this device
         }
     };
 
@@ -314,7 +317,7 @@ public class TileEnergyPylon extends TileBCore implements MultiBlockController {
 
         BlockPos thisPos = worldPosition.relative(direction.get());
         Vec3D coreVec = Vec3D.getDirectionVec(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getBlockPos()).add(0.5, 0.5, 0.5));
-        double coreDistance = Utils.getDistanceAtoB(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getBlockPos().offset(0.5, 0.5, 0.5)));
+        double coreDistance = Utils.getDistance(new Vec3D(thisPos).add(0.5, 0.5, 0.5), new Vec3D(getCore().getBlockPos().offset(0.5, 0.5, 0.5)));
 
         for (int i = 0; i < 100; i++) {
             double location = i / 100D;

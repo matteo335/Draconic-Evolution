@@ -1,7 +1,6 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.brandonscore.api.power.IOPStorage;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
 import com.brandon3055.draconicevolution.api.modules.Module;
 import com.brandon3055.draconicevolution.api.modules.ModuleTypes;
 import com.brandon3055.draconicevolution.api.modules.data.EnergyData;
@@ -20,7 +19,7 @@ public class EnergyEntity extends ModuleEntity<EnergyData> {
     @Override
     public void onRemoved(ModuleContext context) {
         super.onRemoved(context);
-        IOPStorageModifiable storage = context.getOpStorage();
+        IOPStorage storage = context.getOpStorage();
         if (energy > 0 && storage != null) {
             storage.modifyEnergyStored(-energy);
         }
@@ -29,7 +28,7 @@ public class EnergyEntity extends ModuleEntity<EnergyData> {
     @Override
     public void onInstalled(ModuleContext context) {
         super.onInstalled(context);
-        IOPStorageModifiable storage = context.getOpStorage();
+        IOPStorage storage = context.getOpStorage();
         if (energy > 0 && storage != null) {
             storage.modifyEnergyStored(energy);
         }
@@ -40,10 +39,10 @@ public class EnergyEntity extends ModuleEntity<EnergyData> {
         super.writeToItemStack(stack, context);
         IOPStorage storage = context.getOpStorage();
         if (storage != null) {
-            long moduleCap = ModuleTypes.ENERGY_STORAGE.getData(module).getCapacity();
+            long moduleCap = ModuleTypes.ENERGY_STORAGE.getData(module).capacity();
             long newCapacity = storage.getMaxOPStored() - moduleCap;
-            if (newCapacity < storage.getEnergyStored()) {
-                energy = Math.min(storage.getEnergyStored() - newCapacity, moduleCap);
+            if (newCapacity < storage.getOPStored()) {
+                energy = Math.min(storage.getOPStored() - newCapacity, moduleCap);
                 stack.getOrCreateTag().putLong("stored_energy", energy);
             }
         }

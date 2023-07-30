@@ -11,6 +11,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.ModularGuiContainer;
 import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiButton;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiTexture;
 import com.brandon3055.brandonscore.client.gui.modulargui.templates.TGuiBase;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.brandonscore.client.utils.GuiHelperOld;
 import com.brandon3055.draconicevolution.api.capability.DECapabilities;
 import com.brandon3055.draconicevolution.api.modules.lib.ModuleGrid;
@@ -64,7 +65,12 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         //Custom background must be set before template is loaded.
         template.background = GuiTexture.newDynamicTexture(xSize(), ySize(), () -> BCGuiSprites.getThemed("background_dynamic"));
         template.background.onReload(guiTex -> guiTex.setPos(guiLeft(), guiTop()));
+
+        SupportedModulesIcon supportedModules = new SupportedModulesIcon(container.getModuleHost())
+                .setSize(12, 12);
+        template.dynamicButtonPrePosition(e -> e.addLast(supportedModules));
         toolkit.loadTemplate(template);
+
         template.title.setInsets(0, 14, 0, 12);
         template.addPlayerSlots(true, true, true);
         infoPanel = template.infoPanel;
@@ -90,6 +96,9 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
         hudConfig.onReload(e -> e.setPos(itemConfig.maxXPos() + 1, itemConfig.yPos()));
         hudConfig.setHoverText(I18n.get("hud.draconicevolution.open_hud_config"));
         hudConfig.onPressed(() -> minecraft.setScreen(new HudConfigGui()));
+
+        //Need to add this last so it renders on top of everything else.
+        template.background.addChild(supportedModules);
 
         updateInfoPanel();
     }
@@ -123,7 +132,7 @@ public class GuiModularItem extends ModularGuiContainer<ContainerModularItem> {
             int light = 0xFFfbe555;
             int dark = 0xFFf45905;
 
-            MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+            MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
             GuiHelperOld.drawShadedRect(getter.getBuffer(GuiHelper.transColourType), x - 1, y - 1, 18, 18, 1, 0, dark, light, GuiElement.midColour(light, dark), 0);
 
             if (slot.getItem() == container.hostStack) {

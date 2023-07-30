@@ -1,7 +1,7 @@
 package com.brandon3055.draconicevolution.api.modules.entities;
 
 import com.brandon3055.brandonscore.api.TechLevel;
-import com.brandon3055.brandonscore.api.power.IOPStorageModifiable;
+import com.brandon3055.brandonscore.api.power.IOPStorage;
 import com.brandon3055.draconicevolution.api.config.BooleanProperty;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty.BooleanFormatter;
 import com.brandon3055.draconicevolution.api.modules.Module;
@@ -19,7 +19,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.fml.util.thread.EffectiveSide;
@@ -78,19 +77,14 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
 
     @Override
     public void tick(ModuleContext moduleContext) {
-        if (host == null) {
-            LogHelper.bigDev("Host can be null????");
-            return;
-        }
-        IOPStorageModifiable storage = moduleContext.getOpStorage();
-        if (!(moduleContext instanceof StackModuleContext && EffectiveSide.get().isServer() && storage != null)) {
+        IOPStorage storage = moduleContext.getOpStorage();
+        if (!(moduleContext instanceof StackModuleContext context && EffectiveSide.get().isServer() && storage != null)) {
             return;
         }
 
-        StackModuleContext context = (StackModuleContext) moduleContext;
         ShieldData data = getShieldData();
-        shieldCapacity = data.getShieldCapacity();
-        double chargeRate = data.getShieldRecharge();
+        shieldCapacity = data.shieldCapacity();
+        double chargeRate = data.shieldRecharge();
         boolean enabled = shieldEnabled.getValue() && getShieldPoints() > 0;
 
         if (shieldPoints > shieldCapacity) {
@@ -170,7 +164,11 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     }
 
     public int getMaxShieldCoolDown() {
-        return module.getData().getCoolDownTicks() * 100;
+        return module.getData().coolDownTicks() * 100;
+    }
+
+    public void setShieldCoolDown(int shieldCoolDown) {
+        this.shieldCoolDown = shieldCoolDown;
     }
 
     /**
@@ -329,34 +327,12 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
         shieldCache = null;
     }
 
-    @Override
-    public void writeToItemStack(ItemStack stack, ModuleContext context) {
-        super.writeToItemStack(stack, context);
-        CompoundTag nbt = stack.getOrCreateTag();
-        nbt.putInt("cap", shieldCapacity);
-        nbt.putDouble("points", shieldPoints);
-        nbt.putInt("cooldwn", shieldCoolDown);
-    }
-
-    @Override
-    public void readFromItemStack(ItemStack stack, ModuleContext context) {
-        super.readFromItemStack(stack, context);
-        if (stack.hasTag()) {
-            CompoundTag nbt = stack.getOrCreateTag();
-            shieldCapacity = nbt.getInt("cap");
-            shieldPoints = nbt.getDouble("points");
-            shieldCoolDown = nbt.getInt("cooldwn");
-        }
-    }
 
     @Override
     public void writeToNBT(CompoundTag compound) {
         super.writeToNBT(compound);
-        compound.putInt("cap", shieldCapacity);
-        compound.putDouble("points", shieldPoints);
         compound.putDouble("boost", shieldBoost);
         compound.putDouble("max_boost", maxBoost);
-        compound.putInt("cooldwn", shieldCoolDown);
         compound.putInt("boost_time", boostTime);
         compound.putByte("env_cdwn", envDmgCoolDown);
         compound.putBoolean("visible", shieldVisible);
@@ -367,16 +343,28 @@ public class ShieldControlEntity extends ModuleEntity<ShieldControlData> {
     @Override
     public void readFromNBT(CompoundTag compound) {
         super.readFromNBT(compound);
-        shieldCapacity = compound.getInt("cap");
-        shieldPoints = compound.getDouble("points");
         shieldBoost = compound.getDouble("boost");
         maxBoost = compound.getDouble("max_boost");
-        shieldCoolDown = compound.getInt("cooldwn");
         boostTime = compound.getInt("boost_time");
         envDmgCoolDown = compound.getByte("env_cdwn");
         shieldVisible = compound.getBoolean("visible");
         shieldAnim = compound.getFloat("anim");
         shieldHitIndicator = compound.getFloat("hit");
+    }
+
+    @Override
+    protected void readExtraData(CompoundTag nbt) {
+        shieldCapacity = nbt.getInt("cap");
+        shieldPoints = nbt.getDouble("points");
+        shieldCoolDown = nbt.getInt("cooldwn");
+    }
+
+    @Override
+    protected CompoundTag writeExtraData(CompoundTag nbt) {
+        nbt.putInt("cap", shieldCapacity);
+        nbt.putDouble("points", shieldPoints);
+        nbt.putInt("cooldwn", shieldCoolDown);
+        return nbt;
     }
 
     //endregion

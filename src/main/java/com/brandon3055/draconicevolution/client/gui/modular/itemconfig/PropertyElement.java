@@ -9,6 +9,7 @@ import com.brandon3055.brandonscore.client.gui.modulargui.baseelements.GuiSlideC
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiBorderedRect;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiLabel;
 import com.brandon3055.brandonscore.client.gui.modulargui.guielements.GuiSelectDialog;
+import com.brandon3055.brandonscore.client.render.RenderUtils;
 import com.brandon3055.draconicevolution.api.config.ConfigProperty;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -66,7 +67,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
         label.setYSize(10).setPos(xPos() + 10, yPos());
         label.onReload(e -> e.setMaxXPos(maxXPos() - 10, true));
         label.setHoverTextDelay(10);
-        label.setHoverText((e) -> enableToolTip.get() ? data.toolTip : Collections.emptyList());
+        label.setComponentHoverText(() -> enableToolTip.get() && data.toolTip != null ? Collections.singletonList(data.toolTip) : Collections.emptyList());
 
         valueButton = addChild(new GuiButton());
         valueButton.setYSize(10).setYPos(10).setXSizeMod(this::xSize);
@@ -164,7 +165,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
 
     @Override
     public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-        MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+        MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
         drawColouredRect(getter, xPos(), yPos(), xSize(), ySize(), (index % 2 == 0 ? 0x202020 : 0x101010) | opacitySupplier.get());
 
         if (advanced && gui.hoveredProvider != null && gui.hoveredProvider.getProviderName().equals(data.providerName)) {
@@ -229,7 +230,7 @@ public class PropertyElement extends GuiElement<PropertyElement> {
     private class SliderBackground extends GuiElement<SliderBackground> {
         @Override
         public void renderElement(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
-            MultiBufferSource.BufferSource getter = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+            MultiBufferSource.BufferSource getter = RenderUtils.getGuiBuffers();
             if (isMouseOver(mouseX, mouseY) || slider.isDragging()) {
                 drawColouredRect(getter, xPos(), yPos(), xSize(), ySize(), 0x60475b6a);
             }
